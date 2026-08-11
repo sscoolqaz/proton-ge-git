@@ -15,11 +15,16 @@ jobs:
         with:
           pkgname: proton-ge-git
           pkgbuild: ./PKGBUILD
+          assets: |
+            proton-ge-git.install
+            launcher.sh
+            user_settings.py
+            pam_limits.conf
+            proton-ge-custom-bin.conf
           commit_username: ${{ github.actor }}
           commit_email: ${{ secrets.AUR_EMAIL }}
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           commit_message: "update from GitHub ${{ github.sha }}"
           ssh_keyscan_types: rsa,ecdsa,ed25519
-          generate_srcinfo: true
           allow_empty_commits: false
           force_push: false
