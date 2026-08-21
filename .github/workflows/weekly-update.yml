@@ -45,6 +45,7 @@ jobs:
           fi
 
       - name: Commit and push
+        id: commit
         if: steps.bump.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
@@ -52,3 +53,28 @@ jobs:
           git add PKGBUILD
           git commit -m "chore: weekly pkgver refresh"
           git push origin main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      # Pushes made with the default GITHUB_TOKEN (the "Commit and push" step
+      # above) don't trigger other workflows, so aur-publish.yml's `on: push`
+      # never fires for this bot commit. Publish inline instead of relying on
+      # that chain.
+      - name: Publish to AUR
+        if: steps.bump.outputs.changed == 'true'
+        uses: KSXGitHub/github-actions-deploy-aur@v2.7.2
+        with:
+          pkgname: proton-ge-git
+          pkgbuild: ./PKGBUILD
+          assets: |
+            proton-ge-git.install
+            launcher.sh
+            user_settings.py
+            pam_limits.conf
+            proton-ge-custom-bin.conf
+          commit_username: ${{ github.actor }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "update from GitHub ${{ steps.commit.outputs.sha }}"
+          ssh_keyscan_types: rsa,ecdsa,ed25519
+          allow_empty_commits: false
+          force_push: false
