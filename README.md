@@ -2,7 +2,10 @@
 
 AUR package for Proton-GE built from git.
 
-Installs GloriousEggroll's custom Proton build into Steam's compatibility tools.
+Installs GloriousEggroll's custom Proton build into Steam's compatibility tools
+as **Proton-GE-git** (`/usr/share/steam/compatibilitytools.d/proton-ge-git`,
+launcher `proton-ge-git`). It uses its own paths, so it installs side by side with
+the release packages `proton-ge-custom` / `proton-ge-custom-bin`.
 
 ## Install
 
